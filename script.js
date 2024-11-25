@@ -30,10 +30,81 @@ exec('powershell -Command "docker images --format \\"{{.Repository}}:{{.Tag}}\\"
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Informe de Seguridad Docker</title>
+            <style>
+                body {
+                    background-color: rgb(43, 43, 83);
+                    color: white;
+                    margin: 0;
+                    padding: 0;
+                    font-family: Arial, Helvetica, sans-serif;
+                }
+                h1 {
+                    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                    margin-left: 10px;
+                }
+                #informe {
+                    color: white;
+                    margin: 20px;
+                }
+                .botones {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                }
+                .botones button {
+                    background-color: #4CAF50;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    margin: 5px;
+                    cursor: pointer;
+                    border-radius: 5px;
+                }
+                .botones button:hover {
+                    background-color: #45a049;
+                }
+            </style>
         </head>
         <body>
+            <div class="botones">
+                <button id="descargar-txt">Descargar TXT</button>
+                <button id="descargar-json">Descargar JSON</button>
+            </div>
             <h1>Informe de Seguridad Docker</h1>
-            <pre>${stdout}</pre>
+            <div id="informe">
+                <pre>${stdout}</pre>
+            </div>
+            <script>
+                // Función para descargar contenido como archivo
+                function descargarArchivo(contenido, nombreArchivo, tipo) {
+                    const blob = new Blob([contenido], { type: tipo });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = nombreArchivo;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+
+                // Obtener el contenido del informe
+                function obtenerContenidoInforme() {
+                    return document.getElementById('informe').innerText;
+                }
+
+                // Descargar como TXT
+                document.getElementById('descargar-txt').addEventListener('click', () => {
+                    const contenido = obtenerContenidoInforme();
+                    descargarArchivo(contenido, 'informe.txt', 'text/plain');
+                });
+
+                // Descargar como JSON
+                document.getElementById('descargar-json').addEventListener('click', () => {
+                    const contenido = obtenerContenidoInforme();
+                    const json = JSON.stringify({ informe: contenido }, null, 2);
+                    descargarArchivo(json, 'informe.json', 'application/json');
+                });
+            </script>
         </body>
         </html>
         `;
