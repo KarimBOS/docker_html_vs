@@ -1,8 +1,8 @@
 const { exec } = require('child_process');
 const fs = require('fs');
 
-// Obtener el nombre de la última imagen construida
-exec('docker images --format "{{.Repository}}:{{.Tag}}" | head -n 1', (error, imageName, stderr) => {
+// Obtener el nombre de la última imagen construida usando PowerShell
+exec('powershell -Command "docker images --format \\"{{.Repository}}:{{.Tag}}\\" | Select-Object -First 1"', (error, imageName, stderr) => {
     if (error) {
         console.error(`Error obteniendo la última imagen: ${error}`);
         return;
@@ -43,4 +43,3 @@ exec('docker images --format "{{.Repository}}:{{.Tag}}" | head -n 1', (error, im
         console.log('Informe guardado como informe.html');
     });
 });
-
